@@ -1,4 +1,4 @@
-package com.connect;
+package com.common;
 
 import org.apache.zookeeper.*;
 
@@ -14,7 +14,7 @@ public class ZkConnect implements Watcher {
 
     private static CountDownLatch countDownLatch = new CountDownLatch(1);
 
-    public static final String ADDRESS = "192.168.56.102:2181,192.168.56.103:2181,192.168.56.104:2181";
+    public static final String ADDRESS = "192.168.56.102:2181,192.168.56.103:2181,192.168.56.104:2181/testLock";
 
     private ZooKeeper zooKeeper;
 
@@ -25,14 +25,6 @@ public class ZkConnect implements Watcher {
             countDownLatch.countDown();
         }
     }
-
-    Watcher watch = new Watcher(){
-        @Override
-        public void process(WatchedEvent event) {
-            System.out.println("开始监听");
-            System.out.println(event.getState());
-        };
-    };
 
     public ZooKeeper getZooKeeper() {
         return zooKeeper;
@@ -49,7 +41,7 @@ public class ZkConnect implements Watcher {
     }
 
     /**
-     * 创建节点
+     * 创建持久化节点
      * @param path
      * @param data
      * @return
@@ -57,5 +49,29 @@ public class ZkConnect implements Watcher {
      */
     public String createPersistentNode(String path,String data) throws Exception{
         return this.zooKeeper.create(path, data.getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+    }
+
+
+    /**
+     *创建临时节点
+     * @param path
+     * @param data
+     * @return
+     * @throws Exception
+     */
+    public String createEphemeralNode(String path,String data) throws Exception{
+        return this.zooKeeper.create(path, data.getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL);
+    }
+
+
+
+    private String getDataByPath(String path,Watcher watcher) throws KeeperException, InterruptedException {
+        byte [] b =  this.zooKeeper.getData(path, new Watcher() {
+            @Override
+            public void process(WatchedEvent watchedEvent) {
+
+            }
+        },null);
+        return new String(b);
     }
 }
