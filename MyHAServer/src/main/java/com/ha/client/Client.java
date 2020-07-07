@@ -1,6 +1,6 @@
 package com.ha.client;
 
-import com.ha.ZKConnect;
+import com.common.ZkConnect;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
@@ -20,7 +20,7 @@ public class Client {
 
     public static void main(String[] args) throws InterruptedException, KeeperException {
 
-        ZKConnect connect = new ZKConnect();
+        ZkConnect connect = new ZkConnect();
         connect.connect();//建立连接会堵塞
         zooKeeper = connect.getZooKeeper();
 

@@ -1,13 +1,12 @@
 package com.registCenterCommon;
 
 import com.common.ZkConnect;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.data.Stat;
 
-@Data
-@AllArgsConstructor
+/**
+ * 服务提供端注册中心
+ */
 public class RegistCenterProvider {
 
     /**
@@ -26,6 +25,13 @@ public class RegistCenterProvider {
      * 服务名称
      */
     private String serviceName;
+
+    public RegistCenterProvider(String ip, String version, int port, String serviceName) {
+        this.ip = ip;
+        this.version = version;
+        this.port = port;
+        this.serviceName = serviceName;
+    }
 
     /**
      * 服务提供方注册

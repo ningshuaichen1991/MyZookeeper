@@ -1,6 +1,6 @@
 package com.ha.common;
 
-import com.ha.ZKConnect;
+import com.common.ZkConnect;
 import org.apache.zookeeper.*;
 import org.apache.zookeeper.data.Stat;
 
@@ -20,15 +20,13 @@ public class HAAction {
 
     private ZooKeeper zooKeeper;
 
-    existsWatcher existsWatcher = null;
-
     public HAAction(String ip,int port,String serviceName) throws InterruptedException {
         this.ip = ip;
         this.port = port;
         this.serviceName = serviceName;
 
-        ZKConnect connect = new ZKConnect();
-        connect.connect();//建立连接会堵塞
+        ZkConnect connect =new ZkConnect();
+        connect.connect();//连接zookeeper服务
         zooKeeper = connect.getZooKeeper();
     }
 
@@ -43,8 +41,9 @@ public class HAAction {
         try {
             String serviceNamePath = "/"+serviceName;
 
-            if(exists(serviceNamePath)){
+            if(exists(serviceNamePath,false)){
                 System.out.println("服务器状态是Standby");
+                exists(serviceNamePath,true);
             }else{
                 System.out.println("开始创建节点！！！！");
                 createTempData(serviceNamePath,ip+":"+port);
@@ -53,7 +52,7 @@ public class HAAction {
         } catch (KeeperException e) {
             System.out.println("切换active出现异常，已被其他服务器占用");
             try {
-                zooKeeper.exists("/serverRun",existsWatcher);//继续监听
+                exists("/"+serviceName,true);//继续监听
             } catch (KeeperException ex) {
                 ex.printStackTrace();
             } catch (InterruptedException ex) {
@@ -72,11 +71,16 @@ public class HAAction {
      * @throws KeeperException
      * @throws InterruptedException
      */
-    public boolean exists(String path) throws KeeperException, InterruptedException {
-        existsWatcher = (existsWatcher == null?new existsWatcher():existsWatcher);
-        Stat s= zooKeeper.exists(path,existsWatcher);
+    public boolean exists(String path,boolean isWatch) throws KeeperException, InterruptedException {
+        Stat s= null;
+        if(isWatch){
+            s = zooKeeper.exists(path,new existsWatcher());
+        }else{
+            s = zooKeeper.exists(path,false);
+        }
         return s!=null;
     }
+
 
     /**
      * 服务器节点删除的监听器类

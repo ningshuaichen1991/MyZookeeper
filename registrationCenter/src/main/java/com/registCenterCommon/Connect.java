@@ -1,10 +1,8 @@
 package com.registCenterCommon;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-
-@Data
-@AllArgsConstructor
+/**
+ * 连接对象
+ */
 public class Connect {
 
     /**
@@ -16,6 +14,27 @@ public class Connect {
      */
     private int port;
 
+
+    public Connect(String ip, int port) {
+        this.ip = ip;
+        this.port = port;
+    }
+
+    public String getIp() {
+        return ip;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
 
     @Override
     public String toString() {

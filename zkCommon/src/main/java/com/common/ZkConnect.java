@@ -74,4 +74,35 @@ public class ZkConnect implements Watcher {
         },null);
         return new String(b);
     }
+
+    /**
+     * 获取节点数据
+     * @param path
+     * @return
+     * @throws KeeperException
+     * @throws InterruptedException
+     */
+    public String getData(String path) throws KeeperException, InterruptedException {
+        byte [] b =  this.zooKeeper.getData(path, new Watcher(){
+
+            @Override
+            public void process(WatchedEvent event) {
+
+                if(event.getType() == Event.EventType.NodeDeleted){
+                    System.out.println("节点路径："+event.getPath()+"已被删除……");
+                }
+            }
+        },null);
+        return new String(b);
+    }
+
+    /**
+     * 删除节点
+     * @param path
+     * @throws KeeperException
+     * @throws InterruptedException
+     */
+    public void deleteNode(String path) throws KeeperException, InterruptedException {
+        this.zooKeeper.delete(path,-1);
+    }
 }

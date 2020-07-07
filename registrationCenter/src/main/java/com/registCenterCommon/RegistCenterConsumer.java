@@ -1,7 +1,6 @@
 package com.registCenterCommon;
 
 import com.common.ZkConnect;
-import lombok.Data;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
@@ -11,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-@Data
 public class RegistCenterConsumer {
 
     /**
@@ -90,8 +88,7 @@ public class RegistCenterConsumer {
 
         @Override
         public void process(WatchedEvent watchedEvent) {
-            if(watchedEvent.getType()== Event.EventType.NodeChildrenChanged
-                    ||watchedEvent.getType()== Event.EventType.NodeDataChanged){
+            if(watchedEvent.getType()== Event.EventType.NodeChildrenChanged){
                 System.out.println("服务列表节点数据产生变化~~~~~~");
                 serviceList.clear();
                 serviceList.addAll(getConnectByString(getServerList(watchedEvent.getPath())));
